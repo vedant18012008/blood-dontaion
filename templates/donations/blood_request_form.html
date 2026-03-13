@@ -1,0 +1,107 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Request Blood{% endblock %}
+
+{% block extra_css %}
+<style>
+.request-wrap { display:grid; grid-template-columns: 1.05fr 1fr; min-height: 76vh; border-radius: 20px; overflow:hidden; border:1px solid var(--line); }
+.request-left { background: linear-gradient(160deg, #1C0A0D 0%, #3D0812 50%, #7B0D1E 100%); color:#fff; padding: 2.3rem; }
+.request-right { background:#fff; padding:2rem; }
+.request-left h1 { color:#fff; font-size: clamp(2rem, 4vw, 3rem); }
+.request-left p { color:rgba(255,255,255,.82); }
+.badge-pill { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:100px; padding:.35rem .8rem; font-size:.75rem; font-weight:700; display:inline-block; margin-bottom:1rem; }
+.mini-card { background:rgba(255,255,255,.08)!important; border-color:rgba(255,255,255,.18)!important; }
+.mini-card::before { background: rgba(255,255,255,.3) !important; }
+.error-list { list-style: none; padding: 0; margin: .35rem 0 0; }
+.error-list li { font-size: .82rem; color: var(--brand-red); }
+.hospital-tip { background: #FFF7F8; border: 1px dashed rgba(232, 25, 44, 0.25); border-radius: 14px; padding: 0.9rem 1rem; }
+@media (max-width: 991px){ .request-wrap { grid-template-columns:1fr; } .request-right { padding: 1.25rem; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="request-wrap">
+    <div class="request-left">
+        <div class="badge-pill">Live Matching Active</div>
+        <h1>Request blood quickly, clearly, and with less stress</h1>
+        <p class="mb-4">Fill in the hospital, city, units, and urgency. We use that to highlight your request to matching donors and admins right away.</p>
+        <div class="row g-3">
+            <div class="col-4"><div class="card mini-card"><div class="card-body p-3 text-center"><strong class="text-white">~8m</strong><div class="small text-white-50">Avg Response</div></div></div></div>
+            <div class="col-4"><div class="card mini-card"><div class="card-body p-3 text-center"><strong class="text-white">24/7</strong><div class="small text-white-50">Tracking</div></div></div></div>
+            <div class="col-4"><div class="card mini-card"><div class="card-body p-3 text-center"><strong class="text-white">Top 5</strong><div class="small text-white-50">Donor Picks</div></div></div></div>
+        </div>
+        <div class="mt-4">
+            <div class="info-chip bg-white border-0"><i class="bi bi-info-circle"></i>Tip</div>
+            <p class="mt-2 mb-0">Use the exact hospital name and city so the right donors can spot the request faster and the admin team can approve it without follow-up calls.</p>
+        </div>
+    </div>
+
+    <div class="request-right">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+            <div>
+                <div class="section-kicker">Emergency Request</div>
+                <h3 class="mb-1">Request blood</h3>
+                <p class="section-subtitle mb-0">This form is public-facing in the request feed, so accurate details matter. Contact numbers stay inside the workflow, not on the donor directory.</p>
+            </div>
+            <a class="btn btn-soft" href="{% url 'donations:request_list' %}">View live requests</a>
+        </div>
+
+        {% if form.errors %}
+            <div class="alert alert-danger">Please fix the highlighted fields before submitting your request.</div>
+        {% endif %}
+
+        <div class="hospital-tip mb-3">
+            <strong class="d-block mb-1">Before you submit</strong>
+            <span class="text-muted">Double-check the blood group, units needed, and hospital name. This prevents duplicate or delayed requests.</span>
+        </div>
+
+        <form method="post" class="row g-3">
+            {% csrf_token %}
+            <div class="col-md-6">
+                <label class="form-label">Requester Name</label>
+                {{ form.requester_name }}
+                {% if form.requester_name.errors %}<ul class="error-list">{% for error in form.requester_name.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Phone</label>
+                {{ form.requester_phone }}
+                {% if form.requester_phone.errors %}<ul class="error-list">{% for error in form.requester_phone.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Blood Group</label>
+                {{ form.blood_group }}
+                {% if form.blood_group.errors %}<ul class="error-list">{% for error in form.blood_group.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Units Needed</label>
+                {{ form.units_needed }}
+                {% if form.units_needed.errors %}<ul class="error-list">{% for error in form.units_needed.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Urgency</label>
+                {{ form.urgency }}
+                {% if form.urgency.errors %}<ul class="error-list">{% for error in form.urgency.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="col-md-8">
+                <label class="form-label">Hospital</label>
+                {{ form.hospital_name }}
+                {% if form.hospital_name.errors %}<ul class="error-list">{% for error in form.hospital_name.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">City</label>
+                {{ form.city }}
+                {% if form.city.errors %}<ul class="error-list">{% for error in form.city.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="col-12">
+                <label class="form-label">Reason</label>
+                {{ form.reason }}
+                {% if form.reason.errors %}<ul class="error-list">{% for error in form.reason.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <p class="mb-0 text-muted">You’ll be able to track this request after submission.</p>
+                <button class="btn btn-brand px-4" type="submit">Submit Blood Request</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

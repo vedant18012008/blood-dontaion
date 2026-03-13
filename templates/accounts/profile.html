@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>My Profile</h2>
+    <a href="{% url 'accounts:edit_profile' %}" class="btn btn-outline-danger">Edit Profile</a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="stat-label">Profile Completeness</div>
+            <strong>{{ profile_completeness }}%</strong>
+        </div>
+        <div class="progress" role="progressbar" aria-valuenow="{{ profile_completeness }}" aria-valuemin="0" aria-valuemax="100" style="height: 10px;">
+            <div class="progress-bar bg-danger" style="width: {{ profile_completeness }}%;"></div>
+        </div>
+        <small class="text-muted">Complete your profile to improve donor matching.</small>
+    </div>
+</div>
+
+<div class="card mb-4 accent-green">
+    <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <div class="stat-label">Donation Eligibility</div>
+            {% if profile.is_available %}
+                <div class="stat-value text-teal" style="font-size: 1.4rem;">You can donate now</div>
+            {% else %}
+                <div class="stat-value text-gold" style="font-size: 1.4rem;">Rest period active</div>
+                <small class="text-muted">Next eligible date: {{ profile.next_eligible_date|default:'TBD' }}</small>
+            {% endif %}
+        </div>
+        <a href="{% url 'donations:donate' %}" class="btn btn-brand">Log Donation</a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" class="img-fluid rounded" alt="Profile Picture">
+                {% else %}
+                    <div class="border rounded p-4 text-center text-muted">No Image</div>
+                {% endif %}
+            </div>
+            <div class="col-md-9">
+                <p><strong>Name:</strong> {{ request.user.get_full_name|default:request.user.username }}</p>
+                <p><strong>Email:</strong> {{ request.user.email }}</p>
+                <p><strong>Phone:</strong> {{ profile.phone_number|default:'-' }}</p>
+                <p><strong>Blood Group:</strong> <span class="bg-badge">{{ profile.blood_group|default:'-' }}</span></p>
+                <p><strong>Can Donate To:</strong> {{ profile.compatible_recipients|join:', '|default:'-' }}</p>
+                <p><strong>Gender:</strong> {{ profile.gender|default:'-' }}</p>
+                <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|default:'-' }}</p>
+                <p><strong>Location:</strong> {{ profile.city|default:'-' }}, {{ profile.state|default:'-' }}</p>
+                <p><strong>Availability:</strong>
+                    {% if profile.is_available %}
+                        <span class="urgency-normal">Available</span>
+                    {% else %}
+                        <span class="status-pill">Unavailable</span>
+                    {% endif %}
+                </p>
+                <p><strong>Last Donation Date:</strong> {{ profile.last_donation_date|default:'-' }}</p>
+                <p><strong>Next Eligible Date:</strong> {{ profile.next_eligible_date|default:'-' }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header"><h5 class="mb-0">My Badges</h5></div>
+    <div class="card-body">
+        {% for badge in badges %}
+            <span class="bg-badge me-2">{{ badge.badge_type }}</span>
+        {% empty %}
+            <p class="text-muted mb-0">No badges yet. Keep donating to unlock milestones.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">Donation History</h5></div>
+    <div class="card-body p-0">
+        <table class="table mb-0 table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Blood Group</th>
+                    <th>Units</th>
+                    <th>Hospital/Camp</th>
+                    <th>Certificate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for donation in donation_history %}
+                    <tr>
+                        <td>{{ donation.donation_date }}</td>
+                        <td><span class="bg-badge">{{ donation.blood_group }}</span></td>
+                        <td>{{ donation.units_donated }}</td>
+                        <td>{{ donation.hospital_or_camp }}</td>
+                        <td><a class="btn btn-sm btn-outline-danger" href="{% url 'donations:certificate' donation.id %}">Download PDF</a></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted">No donations logged yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

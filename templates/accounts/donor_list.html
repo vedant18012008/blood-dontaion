@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Find Donors{% endblock %}
+
+{% block content %}
+<h2 class="mb-3">Find Donors</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-2">
+            <div class="col-md-3">
+                <label class="form-label">Blood Group</label>
+                <select name="blood_group" class="form-select">
+                    <option value="">All</option>
+                    {% for code, label in blood_groups %}
+                        <option value="{{ code }}" {% if selected_blood_group == code %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" name="city" value="{{ selected_city }}" placeholder="Enter city">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Availability</label>
+                <select name="availability" class="form-select">
+                    <option value="available" {% if selected_availability == 'available' %}selected{% endif %}>Available</option>
+                    <option value="unavailable" {% if selected_availability == 'unavailable' %}selected{% endif %}>Unavailable</option>
+                    <option value="all" {% if selected_availability == 'all' %}selected{% endif %}>All</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button class="btn btn-brand w-100" type="submit">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-3">
+    {% for donor in donors %}
+        <div class="col-md-6 col-xl-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ donor.user.get_full_name|default:donor.user.username }}</h5>
+                    <p class="mb-1"><strong>Blood Group:</strong> <span class="bg-badge">{{ donor.blood_group|default:'N/A' }}</span></p>
+                    <p class="mb-1"><strong>City:</strong> {{ donor.city|default:'N/A' }}</p>
+                    <p class="mb-2"><strong>Status:</strong>
+                        {% if donor.is_available %}
+                            <span class="urgency-normal">Available</span>
+                        {% else %}
+                            <span class="status-pill">Unavailable</span>
+                        {% endif %}
+                    </p>
+                    {% if donor.compatible_recipients %}
+                        <small class="text-muted d-block"><strong>Can donate to:</strong> {{ donor.compatible_recipients|join:', ' }}</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-muted">No donors found for the selected filters.</p>
+    {% endfor %}
+</div>
+
+{% if page_obj.has_other_pages %}
+<nav class="mt-4">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&blood_group={{ selected_blood_group }}&city={{ selected_city }}&availability={{ selected_availability }}">Previous</a></li>
+        {% endif %}
+        <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&blood_group={{ selected_blood_group }}&city={{ selected_city }}&availability={{ selected_availability }}">Next</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

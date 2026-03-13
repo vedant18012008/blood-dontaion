@@ -1,0 +1,465 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Blood Donation Management{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-red: #E8192C;
+            --brand-red-deep: #B51222;
+            --brand-red-soft: #FFF2F4;
+            --amber: #F4A100;
+            --good-green: #12A150;
+            --ink: #1F2937;
+            --muted: #6B7280;
+            --line: #E5E7EB;
+            --surface: #F7F8FA;
+            --white: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            color: var(--ink);
+            background: linear-gradient(180deg, #FBFCFD 0%, #F5F7FA 100%);
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 800;
+            color: var(--ink);
+        }
+
+        .text-muted,
+        .muted {
+            color: var(--muted) !important;
+        }
+
+        .text-crimson { color: var(--brand-red); }
+        .text-gold { color: #BC7A00; }
+        .text-teal { color: var(--good-green); }
+        .text-cream { color: var(--ink); }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.96) !important;
+            border-bottom: 1px solid var(--line);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            letter-spacing: -0.2px;
+        }
+
+        .logo-blood { color: var(--ink); }
+        .logo-link { color: var(--brand-red); }
+
+        .navbar-toggler {
+            border: 1px solid var(--line);
+            padding: 0.5rem 0.7rem;
+            border-radius: 12px;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.2rem rgba(232, 25, 44, 0.15);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2831,41,55,0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .nav-link {
+            color: #4B5563;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 0.45rem 0.85rem !important;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .nav-link i {
+            margin-right: 0.35rem;
+            font-size: 0.95rem;
+            vertical-align: -1px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--brand-red);
+            background: rgba(232, 25, 44, 0.08);
+        }
+
+        .navbar-search {
+            min-width: 220px;
+            max-width: 300px;
+        }
+
+        .btn {
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .btn-brand {
+            background: var(--brand-red);
+            border: 1px solid var(--brand-red);
+            color: #fff;
+        }
+
+        .btn-brand:hover {
+            background: var(--brand-red-deep);
+            border-color: var(--brand-red-deep);
+            color: #fff;
+        }
+
+        .btn-outline-danger {
+            color: var(--brand-red);
+            border-color: var(--brand-red);
+        }
+
+        .btn-outline-danger:hover {
+            background: var(--brand-red);
+            border-color: var(--brand-red);
+            color: #fff;
+        }
+
+        .btn-soft {
+            background: var(--brand-red-soft);
+            color: var(--brand-red);
+            border: 1px solid rgba(232, 25, 44, 0.12);
+        }
+
+        .btn-soft:hover {
+            background: #FDE7EA;
+            color: var(--brand-red-deep);
+        }
+
+        .card,
+        .table,
+        .list-group-item,
+        .alert,
+        .dropdown-menu,
+        .modal-content {
+            background: var(--white) !important;
+            border: 1px solid var(--line) !important;
+            border-radius: 16px;
+            color: var(--ink);
+        }
+
+        .card {
+            box-shadow: 0 10px 26px rgba(15, 23, 42, 0.07);
+            transition: transform 0.22s ease, box-shadow 0.22s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--brand-red);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12);
+        }
+
+        .accent-red::before { background: var(--brand-red); }
+        .accent-amber::before { background: var(--amber); }
+        .accent-green::before { background: var(--good-green); }
+        .accent-neutral::before { background: #94A3B8; }
+
+        .card-header,
+        .table-light,
+        .list-group-item.active {
+            background: #FFF7F8 !important;
+            color: var(--ink) !important;
+            border-color: var(--line) !important;
+            font-weight: 700;
+        }
+
+        .table {
+            --bs-table-bg: transparent;
+            --bs-table-color: var(--ink);
+            --bs-table-border-color: var(--line);
+            --bs-table-striped-bg: #FAFAFB;
+            --bs-table-striped-color: var(--ink);
+            --bs-table-hover-bg: #FFF5F7;
+            --bs-table-hover-color: var(--ink);
+        }
+
+        .form-control,
+        .form-select,
+        textarea,
+        input[type="date"],
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"] {
+            background: #fff !important;
+            border: 1px solid #D7DCE3 !important;
+            color: var(--ink) !important;
+            border-radius: 10px !important;
+            min-height: 46px;
+        }
+
+        textarea.form-control,
+        textarea {
+            min-height: 120px;
+        }
+
+        .form-control:focus,
+        .form-select:focus,
+        textarea:focus {
+            border-color: var(--brand-red) !important;
+            box-shadow: 0 0 0 0.2rem rgba(232, 25, 44, 0.15);
+        }
+
+        .form-label {
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-check-input { border-color: #D7DCE3; }
+        .form-check-input:checked { background-color: var(--brand-red); border-color: var(--brand-red); }
+        .dropdown-item { font-weight: 700; color: var(--ink); }
+        .dropdown-item:hover { background: var(--brand-red-soft); color: var(--brand-red); }
+        .alert ul { margin-bottom: 0; padding-left: 1rem; }
+        .page-shell { max-width: 1280px; }
+        .section-kicker { text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.75rem; font-weight: 800; color: var(--brand-red); }
+        .section-subtitle { color: var(--muted); max-width: 620px; }
+        .field-note { font-size: 0.85rem; color: var(--muted); margin-top: 0.35rem; }
+        .info-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.45rem 0.75rem;
+            border-radius: 999px;
+            background: #FFF7F8;
+            color: var(--brand-red);
+            font-weight: 700;
+            border: 1px solid rgba(232, 25, 44, 0.12);
+        }
+
+        .bg-badge {
+            background: rgba(232, 25, 44, 0.1);
+            color: var(--brand-red);
+            border: 1px solid rgba(232, 25, 44, 0.25);
+            border-radius: 999px;
+            font-weight: 800;
+            padding: 3px 10px;
+            display: inline-block;
+        }
+
+        .urgency-critical {
+            background: rgba(232, 25, 44, 0.12);
+            color: var(--brand-red);
+            border: 1px solid rgba(232, 25, 44, 0.24);
+            border-radius: 999px;
+            padding: 3px 10px;
+            font-weight: 700;
+        }
+
+        .urgency-urgent {
+            background: rgba(244, 161, 0, 0.15);
+            color: #A66300;
+            border: 1px solid rgba(244, 161, 0, 0.35);
+            border-radius: 999px;
+            padding: 3px 10px;
+            font-weight: 700;
+        }
+
+        .urgency-normal {
+            background: rgba(18, 161, 80, 0.12);
+            color: var(--good-green);
+            border: 1px solid rgba(18, 161, 80, 0.28);
+            border-radius: 999px;
+            padding: 3px 10px;
+            font-weight: 700;
+        }
+
+        .status-pill {
+            border: 1px solid #D7DCE3;
+            border-radius: 999px;
+            padding: 3px 10px;
+            background: #F9FAFB;
+            color: #374151;
+            font-weight: 700;
+        }
+
+        .inventory-bar {
+            height: 10px;
+            border-radius: 99px;
+            background: #EEF1F5;
+            overflow: hidden;
+            width: 150px;
+        }
+
+        .inventory-fill { height: 100%; }
+        .critical .inventory-fill { background: var(--brand-red); }
+        .low .inventory-fill { background: var(--amber); }
+        .good .inventory-fill { background: var(--good-green); }
+
+        .dashboard-sidebar {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 0.6rem;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+        }
+
+        .dashboard-sidebar .list-group-item {
+            border: 0 !important;
+            border-radius: 10px !important;
+            color: #4B5563;
+            background: transparent !important;
+            margin-bottom: 0.3rem;
+            font-weight: 700;
+        }
+
+        .dashboard-sidebar .list-group-item:hover {
+            color: var(--ink);
+            background: #F3F4F6 !important;
+        }
+
+        .dashboard-sidebar .list-group-item.active {
+            background: rgba(232, 25, 44, 0.1) !important;
+            color: var(--brand-red) !important;
+            border: 1px solid rgba(232, 25, 44, 0.18) !important;
+        }
+
+        .stat-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .stat-icon.red { background: rgba(232,25,44,0.12); color: var(--brand-red); }
+        .stat-icon.amber { background: rgba(244,161,0,0.15); color: #A66300; }
+        .stat-icon.green { background: rgba(18,161,80,0.12); color: var(--good-green); }
+        .stat-icon.neutral { background: rgba(100,116,139,0.14); color: #475569; }
+        .stat-label { text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; margin-bottom: 0; }
+        .stat-value { font-weight: 800; font-size: 2rem; line-height: 1; }
+        .hero-section { border-radius: 24px; padding: 3rem 2rem 2rem; background: linear-gradient(130deg, #7A0015 0%, #B70F26 45%, #E8192C 100%); position: relative; overflow: hidden; box-shadow: 0 24px 46px rgba(149, 7, 26, 0.35); }
+        .hero-section::after { content: ''; position: absolute; right: -120px; top: -80px; width: 340px; height: 340px; background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 65%); pointer-events: none; }
+        .hero-title { font-weight: 800; font-size: clamp(2.1rem, 6vw, 4.6rem); color: #fff; letter-spacing: -1.2px; margin-bottom: 0.75rem; }
+        .hero-sub { color: rgba(255, 255, 255, 0.9); max-width: 680px; }
+        .hero-cta .btn-brand { background: #fff; color: var(--brand-red); border-color: #fff; }
+        .hero-cta .btn-brand:hover { background: #FDE7EA; color: var(--brand-red-deep); border-color: #FDE7EA; }
+        .hero-cta .btn-outline-danger { color: #fff; border-color: rgba(255,255,255,0.8); }
+        .hero-cta .btn-outline-danger:hover { background: rgba(255,255,255,0.15); color: #fff; border-color: #fff; }
+        .hero-float .card { border: 0 !important; }
+        .page-link {
+            color: var(--brand-red);
+            border-radius: 10px !important;
+            margin: 0 0.15rem;
+            border-color: var(--line);
+        }
+        .page-item.active .page-link,
+        .page-link:hover {
+            background: var(--brand-red);
+            border-color: var(--brand-red);
+            color: #fff;
+        }
+        footer { margin-top: 3rem; background: #fff; border-top: 1px solid var(--line); padding: 1.5rem 0; }
+
+        @media (max-width: 1199px) {
+            .navbar-search { max-width: none; width: 100%; }
+        }
+
+        @media (max-width: 767px) {
+            .hero-section { padding: 2.25rem 1.25rem 1.5rem; }
+            main.page-shell { padding-top: 1.25rem !important; }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-xl sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}"><span class="logo-blood">Blood</span><span class="logo-link">Link</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <form method="get" action="{% url 'accounts:donor_list' %}" class="d-flex me-xl-3 my-3 my-xl-0 navbar-search">
+                <input type="text" class="form-control" name="city" placeholder="Search donors by city..." value="{{ request.GET.city }}">
+            </form>
+            <ul class="navbar-nav me-auto mb-2 mb-xl-0">
+                <li class="nav-item"><a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}"><i class="bi bi-house-door"></i>Home</a></li>
+                <li class="nav-item"><a class="nav-link {% if '/accounts/donors/' in request.path %}active{% endif %}" href="{% url 'accounts:donor_list' %}"><i class="bi bi-people"></i>Find Donors</a></li>
+                <li class="nav-item"><a class="nav-link {% if '/donations/requests/' in request.path %}active{% endif %}" href="{% url 'donations:request_list' %}"><i class="bi bi-clipboard2-pulse"></i>Requests</a></li>
+                <li class="nav-item"><a class="nav-link {% if '/donations/donate/' in request.path %}active{% endif %}" href="{% url 'donations:donate' %}"><i class="bi bi-heart-pulse"></i>Donate</a></li>
+                <li class="nav-item"><a class="nav-link {% if '/donations/inventory/' in request.path %}active{% endif %}" href="{% url 'donations:inventory' %}"><i class="bi bi-box-seam"></i>Inventory</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if '/donations/request/' in request.path or '/accounts/register/' in request.path or '/accounts/login/' in request.path or '/accounts/profile/' in request.path or '/dashboard/' in request.path %}active{% endif %}" href="#" data-bs-toggle="dropdown"><i class="bi bi-grid-3x3-gap"></i>More</a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'donations:blood_request' %}">Request Form</a></li>
+                        <li><a class="dropdown-item" href="{% url 'donations:camps' %}">Donation Camps</a></li>
+                        {% if user.is_authenticated %}
+                            <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
+                            {% if user.is_staff %}
+                                <li><a class="dropdown-item" href="{% url 'dashboard:home' %}">Dashboard</a></li>
+                            {% endif %}
+                        {% else %}
+                            <li><a class="dropdown-item" href="{% url 'accounts:register' %}">Register</a></li>
+                            <li><a class="dropdown-item" href="{% url 'accounts:login' %}">Login</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center gap-2 mt-3 mt-xl-0">
+                {% if user.is_authenticated %}
+                    <a class="btn btn-soft btn-sm" href="{% url 'accounts:profile' %}"><i class="bi bi-person-circle me-1"></i>{{ user.username }}</a>
+                    <a class="btn btn-sm btn-outline-danger" href="{% url 'accounts:logout' %}">Logout</a>
+                {% else %}
+                    <a class="btn btn-sm btn-outline-danger" href="{% url 'accounts:login' %}">Login</a>
+                    <a class="btn btn-sm btn-brand" href="{% url 'accounts:register' %}">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="container page-shell py-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <div class="container text-center">
+        <p class="mb-1 fw-semibold">Blood Donation Management System</p>
+        <p class="mb-0 text-muted">Contact: support@bloodbank.local | +91-00000-00000</p>
+    </div>
+</footer>
+
+{% block extra_js %}{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

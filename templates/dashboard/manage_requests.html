@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Requests{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3">
+        {% include 'dashboard/_sidebar.html' with active='requests' %}
+    </div>
+    <div class="col-lg-9">
+        <h2 class="mb-3">Manage Blood Requests</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Requester</th>
+                        <th>Blood Group</th>
+                        <th>Units</th>
+                        <th>City</th>
+                        <th>Status</th>
+                        <th>Recommended Donors (Top 5)</th>
+                        <th>Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in request_rows %}
+                        {% with req=row.request recs=row.recommendations %}
+                        <tr>
+                            <td>{{ req.requester_name }}</td>
+                            <td><span class="bg-badge">{{ req.blood_group }}</span></td>
+                            <td>{{ req.units_needed }}</td>
+                            <td>{{ req.city }}</td>
+                            <td><span class="status-pill">{{ req.status }}</span></td>
+                            <td>
+                                {% if recs %}
+                                    {% for donor in recs %}
+                                        <div class="small">{{ donor.user.username }} - {{ donor.city|default:'N/A' }}</div>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="text-muted small">No strong matches.</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" class="d-flex gap-2">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="request_id" value="{{ req.id }}">
+                                    <select name="status" class="form-select form-select-sm">
+                                        {% for value, label in status_choices %}
+                                            <option value="{{ value }}" {% if req.status == value %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button class="btn btn-sm btn-brand" type="submit">Save</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endwith %}
+                    {% empty %}
+                        <tr><td colspan="7" class="text-center text-muted">No requests available.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

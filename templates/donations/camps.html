@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Donation Camps{% endblock %}
+
+{% block content %}
+<h2 class="mb-3">Upcoming Donation Camps</h2>
+<div class="row g-3">
+    {% for camp in camps %}
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5>{{ camp.title }}</h5>
+                    <p class="mb-1"><strong>Date:</strong> {{ camp.camp_date }}</p>
+                    <p class="mb-1"><strong>Location:</strong> {{ camp.location }}, {{ camp.city }}</p>
+                    <p class="mb-1"><strong>Seats:</strong> {{ camp.registered_count }}/{{ camp.max_donors }}</p>
+                    <p class="text-muted">{{ camp.description }}</p>
+
+                    {% if user.is_authenticated %}
+                        {% if camp.id in registrations %}
+                            <span class="urgency-normal">Registered</span>
+                        {% else %}
+                            <form method="post" action="{% url 'donations:camp_register' camp.id %}">
+                                {% csrf_token %}
+                                <button class="btn btn-brand btn-sm">Register</button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'accounts:login' %}" class="btn btn-outline-danger btn-sm">Login to Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-muted">No active camps right now.</p>
+    {% endfor %}
+</div>
+{% endblock %}

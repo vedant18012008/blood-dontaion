@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Inventory{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3">
+        {% include 'dashboard/_sidebar.html' with active='inventory' %}
+    </div>
+    <div class="col-lg-9">
+        <h2 class="mb-3">Manage Inventory</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Blood Group</th>
+                            <th>Units Available</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in inventory %}
+                            <tr>
+                                <td><span class="bg-badge">{{ item.blood_group }}</span></td>
+                                <td><input type="number" min="0" class="form-control" name="units_{{ item.id }}" value="{{ item.units_available }}"></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <button type="submit" class="btn btn-brand">Update Inventory</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
